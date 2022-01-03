@@ -44,18 +44,6 @@ def parseVisitor(data):
     })
 
 @app.before_request
-def block_method():
-    x = True
-    ip = request.headers.getlist('X-Forwarded-For')[0]
-    if ip in ip_list:
-      x = True
-    else:
-      x = False
-
-    if (not x):
-        abort(403)
-
-@app.before_request
 def getAnalyticsData():
     global userOS, userBrowser, userIP, userContinent, userCity, userCountry,sessionID 
     userInfo = httpagentparser.detect(request.headers.get('User-Agent'))
@@ -77,6 +65,18 @@ def getAnalyticsData():
     except:
         print("Could not find: ", userIP)
     getSession()
+
+@app.before_request
+def block_method():
+    x = True
+    ip = request.headers.getlist('X-Forwarded-For')[0]
+    if ip in ip_list:
+      x = True
+    else:
+      x = False
+
+    if (not x):
+        abort(403)
     
 def getSession():
     global sessionID
