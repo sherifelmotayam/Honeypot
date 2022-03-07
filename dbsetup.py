@@ -94,4 +94,32 @@ def total_pages_view(c):
     print("Pages view count : ", result)
     return result  
 
+def unique_pages_view(c):
+    sql = "SELECT DISTINCT session FROM pages" 
+    c.execute(sql)
+    result = len(c.fetchall())
+    conn.commit()
+    print("Unique pages view count : ", result)
+    return result   
+
+def login_user(c, username, password):
+    sql = """SELECT * FROM accounts WHERE username = %s AND password = %s"""
+    c.execute(sql, (username, password,))
+    result = c.fetchone()
+    conn.commit()
+    return result
+
+def exist_account(c, username):
+    sql = """SELECT * FROM accounts WHERE username = %s"""
+    c.execute(sql, (username,))
+    result = c.fetchone()
+    conn.commit()
+    print("resss", result)
+    return result
+
+def register_user(c, username, password, email):
+    sql = "INSERT INTO accounts (`username`, `password`, `email`, `type`) VALUES (%s, %s, %s, %s)"
+    val = (username, password, email, 'user')    
+    c.execute(sql, val)
+    conn.commit()
   
