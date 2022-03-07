@@ -60,7 +60,7 @@ def select_all_pages(c):
     rows = c.fetchall()
     conn.commit()
     return rows
-
+  
 def select_all_user_visits(c, session_id):
     sql = """SELECT * FROM pages WHERE session = %s"""
     c.execute(sql, (session_id,))
@@ -122,7 +122,7 @@ def register_user(c, username, password, email):
     val = (username, password, email, 'user')    
     c.execute(sql, val)
     conn.commit()
-    
+
 def profile_user(c, id):
     sql = """SELECT * FROM accounts WHERE id = %s"""
     c.execute(sql, (id,))
@@ -174,6 +174,5 @@ def main():
     else:
         print("Could not establish connection")
         
-if _name_ == '_main_':
+if __name__ == '__main__':
     main()
-  

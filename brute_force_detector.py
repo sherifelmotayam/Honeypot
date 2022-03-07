@@ -73,7 +73,8 @@ def passTaken(password):
 def similar(LAST_INDEX):
     return SequenceMatcher(None, PASSWORD_LIST[LAST_INDEX], PASSWORD_LIST[LAST_INDEX-1]).ratio()
 
- def average(): 
+# calc. result avg.    
+def average(): 
     SUM = 0
     for i in AVERAGE_LIST:
         SUM += i   
