@@ -1,6 +1,6 @@
 
 // Configure Pusher instance
-var pusher = new Pusher('3a2a219040583d8ee1b4', {
+   var pusher = new Pusher('3a2a219040583d8ee1b4', {
     cluster: 'mt1',
     encrypted: true
   });
@@ -9,6 +9,8 @@ var pusher = new Pusher('3a2a219040583d8ee1b4', {
   
   $(document).ready(function(){
       var dataTable = $("#dataTable").DataTable()
+
+      var dataTableUser = $("#dataTableUser").DataTable()
       // var userSessions = $("#userSessions").DataTable()
       var pages = $("#pages").DataTable()
   
@@ -21,6 +23,17 @@ var pusher = new Pusher('3a2a219040583d8ee1b4', {
         var updatedAt = `${d.getFullYear()}/${months[d.getMonth()]}/${d.getDay()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
         document.getElementById('session-update-time').innerText = updatedAt
       })
+
+      axios.get('/get-all-employees')
+      .then(response => {
+            response.data.forEach((data) => {
+                insertDatatableUser(data)
+            })      
+        // var d = new Date();
+        // var updatedAt = `${d.getFullYear()}/${months[d.getMonth()]}/${d.getDay()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
+        // document.getElementById('session-update-time').innerText = updatedAt
+      })
+
   
       var sessionChannel = pusher.subscribe('session');
       sessionChannel.bind('new', function(data) {
@@ -45,4 +58,22 @@ var pusher = new Pusher('3a2a219040583d8ee1b4', {
           `<a href=${"/dashboard/"+data.session}>View pages visited</a>`
         ]);
         dataTable.order([0, 'desc']).draw();
-  }
+   }
+
+  function insertDatatableUser(data){
+    var dataTable = $("#dataTableUser").DataTable()
+    dataTable.row.add([
+        data.employeeId,
+        data.firstName,
+        data.lastName,
+        data.email,
+        data.phoneNumber,
+        data.hireDate,
+        data.job,
+        data.salary
+        // `<a href=${"/dashboard/"+data.session}>View pages visited</a>`
+      ]);
+      dataTable.order([0, 'desc']).draw();
+    }
+
+
