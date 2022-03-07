@@ -73,4 +73,47 @@ def passTaken(password):
 def similar(LAST_INDEX):
     return SequenceMatcher(None, PASSWORD_LIST[LAST_INDEX], PASSWORD_LIST[LAST_INDEX-1]).ratio()
 
- 
+ def average(): 
+    SUM = 0
+    for i in AVERAGE_LIST:
+        SUM += i   
+    AVERAGE = SUM / len(AVERAGE_LIST) 
+    print("avg list : ", AVERAGE)
+    return AVERAGE
+
+smallest = 6
+largest = 10
+
+random_number = random.randint(smallest, largest - 1)
+
+def timeAvg():
+    # normalize the TIME LIST to be between 0 and 1
+    data = np.array([TIME_LIST]).reshape(-1, 1)
+    scaler = MinMaxScaler()
+    scaler.fit(data)
+    TIME_LIST_NEW = scaler.transform(data).flatten()
+
+    print(scaler.transform(data).flatten())
+
+    SUM = 0
+    for i in TIME_LIST_NEW:
+        SUM += i
+    AVERAGE = SUM / len(TIME_LIST_NEW) 
+    print("time avg : ", AVERAGE)
+    return AVERAGE
+
+# threshold func.
+def threshold():
+    print("random number :", globals()['random_number'])
+    if(globals()['FAILED_ATTEMPTS_CTR'] == globals()['random_number'] and globals()['SAME_USERNAME_CTR'] == globals()['random_number']):
+
+        SEQUENCE_MATCHER_AVERAGE = average()
+        TIME_AVG = timeAvg()
+
+        if(SEQUENCE_MATCHER_AVERAGE <= 0.5 and TIME_AVG <= 0.5):
+            return 1
+        else:
+            globals()['FAILED_ATTEMPTS_CTR'] -= 2
+            globals()['SAME_USERNAME_CTR'] -= 2
+    else:
+        return 0
