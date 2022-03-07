@@ -275,3 +275,82 @@ def register():
     # Show registration form with message (if any)
     return render_template('register.html', msg=msg)
 
+# http://localhost:5000/pythinlogin/home - this will be the home page, only accessible for loggedin users
+@app.route('/home')
+def home():
+    data = ['home', sessionID, str(datetime.now().replace(microsecond=0))]
+    parseVisitor(data)
+
+    # Check if user is loggedin
+    if 'loggedin' in session:
+        # User is loggedin show them the home page
+        
+        # employees_data = read_employees(c)
+        # return render_template('home.html', username=session['username'], employees=employees_data)
+        
+        return render_template('home.html', username=session['username'])
+    # User is not loggedin redirect to login page
+    return redirect(url_for('login'))
+    
+@app.route('/about')
+def about():
+    data = ['about',sessionID, str(datetime.now().replace(microsecond=0))]
+    parseVisitor(data)
+    return render_template('about.html')
+    
+@app.route('/dashboard')
+def dashboard():
+    sessions_count = total_sessions(c)
+    visitors_count = total_visitors(c)
+    pages_view_count = total_pages_view(c)
+    unique_pages_count = unique_pages_view(c)
+    return render_template('dashboard.html', sessions=sessions_count, visitors=visitors_count, pages=pages_view_count, unique_pages=unique_pages_count)
+    
+@app.route('/dashboard/<session_id>', methods=['GET'])
+def sessionPages(session_id):
+    print("session id : ", session_id)
+    result = select_all_user_visits(c,session_id)
+    return render_template("dashboard-single.html",data=result)
+
+@app.route('/logout')
+def logout():
+    # Remove session data, this will log the user out
+   session.pop('loggedin', None)
+   session.pop('id', None)
+   session.pop('username', None)
+   # Redirect to login page
+   return redirect(url_for('login'))    
+    
+@app.route('/get-all-sessions')
+def get_all_sessions():
+    data = []
+    dbRows = select_all_sessions(c)
+    for row in dbRows:
+        data.append({
+            'ip' : row[1],
+            'continent' : row[2],
+            'country' : row[3], 
+            'city' : row[4], 
+            'os' : row[5], 
+            'browser' : row[6], 
+            'session' : row[7],
+            'time' : row[8]
+        })
+    return jsonify(data)
+    
+@app.route('/get-all-employees')
+def get_all_employees():
+    data = []
+    dbRows = read_employees(c)
+    for row in dbRows:
+        data.append({
+            'employeeId' : row[0],
+            'firstName' : row[1],
+            'lastName' : row[2], 
+            'email' : row[3], 
+            'phoneNumber' : row[4], 
+            'hireDate' : row[5], 
+            'job' : row[6],
+            'salary' : row[7]
+        })
+    return jsonify(data)
