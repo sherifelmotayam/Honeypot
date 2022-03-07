@@ -122,4 +122,58 @@ def register_user(c, username, password, email):
     val = (username, password, email, 'user')    
     c.execute(sql, val)
     conn.commit()
+    
+def profile_user(c, id):
+    sql = """SELECT * FROM accounts WHERE id = %s"""
+    c.execute(sql, (id,))
+    result = c.fetchone()
+    conn.commit()
+    print(result)
+    return result
+
+def read_employees(c):
+    sql = """SELECT * FROM employees"""
+    c.execute(sql)
+    rows = c.fetchall()
+    conn.commit()
+    # print("rowssss: ", rows) 
+    return rows
+
+def read_ips(c):
+    sql = """SELECT DISTINCT ip FROM sessions WHERE status = 0"""
+    c.execute(sql)
+    rows = c.fetchall()
+    conn.commit()
+    print("rowssss: ", rows) 
+    return rows
+
+def add_blocked_ip(c, ip):
+    sql = """UPDATE `sessions` SET `status` = 1 WHERE ip = %s"""
+    c.execute(sql, (ip,))
+    conn.commit()
+
+def read_blocked_ips(c):
+    sql = """SELECT DISTINCT ip FROM sessions WHERE status = 1"""
+    c.execute(sql)
+    rows = c.fetchall()
+    conn.commit()
+    print("rowssss: ", rows) 
+    return rows
+
+def remove_blocked_ips(c, ip):
+    sql = """UPDATE `sessions` SET `status` = 0 WHERE ip = %s"""
+    c.execute(sql, (ip,))
+    conn.commit()
+    print("Deleted successfully")
+
+def main():
+    # create a database connection
+    conn = create_connection()
+    if conn is not None:
+        print("Connection established!")
+    else:
+        print("Could not establish connection")
+        
+if _name_ == '_main_':
+    main()
   
