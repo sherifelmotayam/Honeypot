@@ -354,3 +354,40 @@ def get_all_employees():
             'salary' : row[7]
         })
     return jsonify(data)
+
+@app.route('/get-all-blocked-ips')
+def get_all_blocked_ips():
+    data = []
+    dbRows = read_blocked_ips(c)
+    for row in dbRows:
+        data.append({
+            'id' : row[0],
+            'ip' : row[1],
+        })
+    return jsonify(data)    
+
+@app.route('/ip')
+def ip():
+    ips = read_ips(c)
+    blocked_ips = read_blocked_ips(c)
+    return render_template('ip.html', ips=ips, blocked_ips=blocked_ips) 
+
+@app.route('/blockAction', methods=['GET','POST'])
+def blockAction():
+    if request.method == 'POST' and 'ip' in request.form:
+        ip = request.form['ip']
+        add_blocked_ip(c, ip)
+        print("{} entered in db".format(ip))
+    return redirect(url_for('ip'))
+
+@app.route('/unBlockAction', methods=['GET','POST'])
+def unBlockAction():
+    if request.method == 'POST' and 'ip' in request.form:
+        ip = request.form['ip']
+        remove_blocked_ips(c, ip)
+    return redirect(url_for('ip'))    
+
+if __name__ == '__main__':
+    #main()
+    #app.run(debug=True)
+    app.run()    
