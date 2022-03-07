@@ -84,3 +84,82 @@ def G_means(token_seq, c_name):
     return sum(g_scores)/len(g_scores) if g_scores else 0 # Average
 
 
+
+# read data from file. You should change this path!!
+basedir = 'dataset'
+filelist = os.listdir(basedir)
+df_list = []
+for file in filelist:
+    if file == '.DS_Store':
+        continue
+    df = pd.read_csv(os.path.join(basedir,file), sep='Aw3s0meSc0t7', names=['raw_sql'], header=None, engine='python')
+    df['type'] = 'plain' if file.split('.')[0] == 'plain' else 'sqli'
+    df_list.append(df)
+
+# god pandas make to us a dataframe like excel format
+dataframe = pd.concat(df_list, ignore_index=True)
+dataframe.dropna(inplace=True)
+print (dataframe['type'].value_counts())
+
+# tokenize raw sql
+dataframe['sql_tokens'] = dataframe['raw_sql'].map(lambda x: Sql_tokenizer(x))
+
+# get token sequences
+dataframe['token_seq'] = dataframe['sql_tokens'].map(lambda x: GetTokenSeq(x, 3))
+
+_tokens, _types = zip(*[(token,token_type) for token_list,token_type in zip(dataframe['token_seq'], dataframe['type']) for token in token_list])
+tc_dataframe = G_test(pd.Series(_tokens), pd.Series(_types))
+
+# now we set real features for machine learning algorithm.
+dataframe['token_length'] = dataframe['sql_tokens'].map(lambda x: len(x))
+dataframe['entropy'] = dataframe['raw_sql'].map(lambda x: Entropy(x))
+dataframe['sqli_g_means'] = dataframe['token_seq'].map(lambda x: G_means(x, 'sqli_GTest'))
+dataframe['plain_g_means'] = dataframe['token_seq'].map(lambda x: G_means(x, 'plain_GTest'))
+
+# list of feature vectors
+X = dataframe[['token_length', 'entropy','sqli_g_means','plain_g_means']].values
+
+# encode categorical feature
+from sklearn.preprocessing import LabelEncoder
+labelencoder_y = LabelEncoder()
+y = labelencoder_y.fit_transform(dataframe['type'].tolist())
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state = 0)
+
+'''
+# Feature Scaling but not use this.
+from sklearn.preprocessing import StandardScaler
+sc_X = StandardScaler()
+X_train = sc_X.fit_transform(X_train)
+X_test = sc_X.transform(X_test)
+'''
+
+from sklearn.ensemble import GradientBoostingClassifier
+clf = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=7, random_state=0).fit(X_train, y_train)
+print ("Gradient Boosting Tree Acurracy: %f" % clf.score(X_test, y_test))
+
+# you can check your test data.
+def Check_is_sql(sql):
+    # do some pre-processing remoce comment /**/, /*!num */
+    _tmp = re.sub(r'(/\*[\w\d(\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\-|\_|\=|\+|\[|\{|\]|\}|\\|\:|\;|\'|\"|\<|\>|\,|\.|\?)\s\r\n\v\f]*\*/)', ' ', sql)
+    _tmp = re.sub(r'(/\*!\d+|\*/)', ' ', _tmp)
+
+    sql_tokens = Sql_tokenizer(_tmp.strip())
+    token_seq = GetTokenSeq(sql_tokens, 3)
+    sqli_g_means = G_means(token_seq, 'sqli_GTest')
+    plain_g_means = G_means(token_seq, 'plain_GTest')
+    _X = [[len(sql_tokens), Entropy(sql), sqli_g_means, plain_g_means]]
+    return clf.predict(_X)[0]
+
+# check_data = '-1923 union select scott, python, machine, learning, study, version, 1--'
+# check_data = 'day la mot doan van ban vo nghia nhe'
+# check_data = "this is a text"
+# res = Check_is_sql(check_data)
+# print ("PROCCESSING: %s" % check_data)
+# print ("------------------------------")
+# print ("RESULT: ")
+# if res == 1:
+#     print ("[SQL INJECTION DETECTED]")
+# else:
+#     print ("[NO SQL INJECTION DETECTED]")
