@@ -60,4 +60,38 @@ def select_all_pages(c):
     rows = c.fetchall()
     conn.commit()
     return rows
+
+def select_all_user_visits(c, session_id):
+    sql = """SELECT * FROM pages WHERE session = %s"""
+    c.execute(sql, (session_id,))
+    rows = c.fetchall()
+    conn.commit()
+    print("rowssss: ", rows)
+   
+    return rows
+
+def total_sessions(c):
+    sql = "SELECT * FROM sessions"
+    c.execute(sql)
+    result = len(c.fetchall())
+    conn.commit()
+    print("Sessions count : ", result)
+    return result
+
+def total_visitors(c):
+    sql = "SELECT DISTINCT ip FROM sessions" 
+    c.execute(sql)
+    result = len(c.fetchall())
+    conn.commit()
+    print("Visitors count : ", result)
+    return result   
+
+def total_pages_view(c):
+    sql = "SELECT * FROM pages" 
+    c.execute(sql)
+    result = len(c.fetchall())
+    conn.commit()
+    print("Pages view count : ", result)
+    return result  
+
   
