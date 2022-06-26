@@ -37,3 +37,43 @@ def getAnalyticsData():
 def login():
     return visitorController.login()
 
+@app.route('/profile')
+@limiter.limit("1/second")
+def profile():
+    return visitorController.profile()
+
+@app.route('/addEmployee')
+def addEmployee():
+    return visitorController.addEmployee()
+
+@app.route('/add-employee', methods=['GET', 'POST'])
+@limiter.limit("1/second")
+def addEmployees():
+    return visitorController.addEmployees()
+
+@app.route('/register', methods=['GET', 'POST'])
+@limiter.limit("1/second")
+def register():
+    return visitorController.register()
+
+@app.route('/home')
+@limiter.limit("1/second")
+def home():
+    return visitorController.home()
+
+@app.route('/dashboard')
+def dashboard():
+    return adminController.dashboard()
+
+@app.route('/dashboard/<session_id>', methods=['GET'])
+def sessionPages(session_id):
+    return adminController.sessionPages(session_id)
+
+@app.route('/logout')
+def logout():
+    return visitorController.logout()
+
+@app.route('/get-all-sessions')
+def get_all_sessions():
+    return adminController.get_all_sessions()
+    
