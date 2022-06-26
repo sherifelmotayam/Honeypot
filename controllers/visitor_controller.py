@@ -91,4 +91,40 @@ class VisitorController:
             return "<script>alert('document.cookie');</script>"
         else:
             print(f"Your payload {input} is safe 200 OK\n")
+                
 
+    def data(self, account):
+        self.__visitor.set_user_id(account['id'])
+        self.__visitor.set_first_name(account['first_name'])
+        self.__visitor.set_last_name(account['last_name'])
+        self.__visitor.set_user_email(account['email'])
+        self.__visitor.set_user_password(account['password'])
+        self.__visitor.set_type(account['type'])
+
+    def profile(self):
+        print("url: ", request.url)
+        self.check_urls(request.url)
+
+        data = ['profile', self.__visitor.get_sessionID(), str(datetime.now().replace(microsecond=0))]
+        self.__visitor.parseVisitor(data)
+
+        # Check if user is loggedin 
+        if 'loggedin' in session and session['type'] == 1:
+            # We need all the account info for the user so we can display it on the profile page
+            first_name = self.__visitor.get_first_name()
+            last_name = self.__visitor.get_last_name()
+            email = self.__visitor.get_email()
+            password = self.__visitor.get_password()
+            if(first_name != None and last_name != None and email != None and password != None):
+                fullname = first_name + " " + last_name
+            else: 
+                fullname = ""
+                first_name = ""
+                last_name = ""
+                email = ""
+                password = ""
+                
+            # Show the profile page with account info
+            return render_template('profile.html', first_name=first_name, last_name=last_name, email=email, password=password, fullname=fullname)
+        # User is not loggedin or another type redirect to login page
+        return redirect(url_for('error403'))
