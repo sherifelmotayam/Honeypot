@@ -40,3 +40,33 @@ class AdminController:
                 'time' : row['created_at']
             })
         return jsonify(data)
+    def get_all_blocked_ips(self):
+        data = []
+        dbRows = self.__admin.read_blocked_ips()
+        for row in dbRows:
+            data.append({
+                'id' : row['id'],
+                'ip' : row['ip'],
+            })
+        return jsonify(data) 
+
+    def ip(self):
+        if 'loggedin' in session and session['type'] == 2:
+            ips = self.__admin.read_ips()
+            blocked_ips = self.__admin.read_blocked_ips()
+            return render_template('ip.html', ips=ips, blocked_ips=blocked_ips) 
+        else:
+            return redirect(url_for('error403')) 
+
+    def blockAction(self):
+        if request.method == 'POST' and 'ip' in request.form:
+            ip = request.form['ip']
+            self.__admin.add_blocked_ip(ip)
+            print("{} entered in db".format(ip))
+        return redirect(url_for('ip'))
+
+    def unBlockAction(self):
+        if request.method == 'POST' and 'ip' in request.form:
+            ip = request.form['ip']
+            self.__admin.remove_blocked_ips(ip)
+        return redirect(url_for('ip'))  
