@@ -128,3 +128,41 @@ class VisitorController:
             return render_template('profile.html', first_name=first_name, last_name=last_name, email=email, password=password, fullname=fullname)
         # User is not loggedin or another type redirect to login page
         return redirect(url_for('error403'))
+    
+    
+    
+    
+    def get_all_employees(self):
+        data = []
+        if self.__isAttacker:
+            dbRows = self.__attacker.read_employees()
+        else:
+            dbRows = self.__normalUser.read_employees()
+        for row in dbRows:
+            data.append({
+                'employeeId' : row['EMPLOYEE_ID'],
+                'firstName' : row['FIRST_NAME'],
+                'lastName' : row['LAST_NAME'], 
+                'email' : row['EMAIL'], 
+                'phoneNumber' : row['PHONE_NUMBER'], 
+                'hireDate' : row['HIRE_DATE'], 
+                'job' : row['JOB_TITLE'],
+                'salary' : row['SALARY']
+            })
+        return jsonify(data)
+
+    def about_us(self):
+        data = ['about us', self.__visitor.get_sessionID(), str(datetime.now().replace(microsecond=0))]
+        self.__visitor.parseVisitor(data)
+
+        first_name = self.__visitor.get_first_name()
+        last_name = self.__visitor.get_last_name()
+        if first_name != None and last_name != None:
+            fullname = first_name + " " + last_name
+        else:
+            fullname = ""
+        
+        if 'loggedin' in session and session['type'] == 1:
+            return render_template('about-us.html', fullname=fullname)
+        else:
+            return redirect(url_for('error403'))
