@@ -77,3 +77,33 @@ def logout():
 def get_all_sessions():
     return adminController.get_all_sessions()
     
+@app.route('/get-all-employees')
+def get_all_employees():
+    return visitorController.get_all_employees()
+
+@app.route('/get-all-blocked-ips')
+def get_all_blocked_ips():
+    return adminController.get_all_blocked_ips()   
+
+@app.route('/ip')
+def ip():
+    return adminController.ip()
+
+@app.route('/blockAction', methods=['GET','POST'])
+def blockAction():
+    return adminController.blockAction()
+
+@app.route('/unBlockAction', methods=['GET','POST'])
+def unBlockAction():
+    return adminController.unBlockAction()  
+
+@app.route('/403')
+def error403():
+    return errorController.error403()
+
+@app.route('/aboutus')
+def about_us():
+    return visitorController.about_us()
+    
+if __name__ == '__main__':
+    app.run()
