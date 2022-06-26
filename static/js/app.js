@@ -11,7 +11,6 @@
       var dataTable = $("#dataTable").DataTable()
 
       var dataTableUser = $("#dataTableUser").DataTable()
-      // var userSessions = $("#userSessions").DataTable()
       var pages = $("#pages").DataTable()
   
       axios.get('/get-all-sessions')
@@ -29,9 +28,9 @@
             response.data.forEach((data) => {
                 insertDatatableUser(data)
             })      
-        // var d = new Date();
-        // var updatedAt = `${d.getFullYear()}/${months[d.getMonth()]}/${d.getDay()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
-        // document.getElementById('session-update-time').innerText = updatedAt
+        var d = new Date();
+        var updatedAt = `${d.getFullYear()}/${months[d.getMonth()]}/${d.getDay()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
+        document.getElementById('session-update-time').innerText = updatedAt
       })
 
   
@@ -71,9 +70,6 @@
         data.hireDate,
         data.job,
         data.salary
-        // `<a href=${"/dashboard/"+data.session}>View pages visited</a>`
       ]);
       dataTable.order([0, 'desc']).draw();
     }
-
-
