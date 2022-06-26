@@ -1,6 +1,6 @@
 {% extends 'layouts/security-admin-layout.html' %}
 
-{% block title %}SB Admin - Start Bootstrap Template{% endblock %}
+{% block title %}Honeypot | IP{% endblock %}
 
 {% block content %}
    <div class="content-wrapper">
@@ -8,20 +8,22 @@
         <div class="form-group">
         <form action="/blockAction" method="POST">  
             <label>Select an Ip : </label><select name="ip" class="form-control selcls">
+                <OPTION  value="" SELECTED>--SELECT--</OPTION>
             {% for ip in ips %}
-            <OPTION  value="{{ip[0]}}" SELECTED>{{ip[0]}}</OPTION>
+            <OPTION  value="{{ip['ip']}}" SELECTED>{{ip['ip']}}</OPTION>
             {% endfor %}
             </select><br>
-            <button type="submit" class="btn btn-success">Block Ip</button>
+            <button type="submit" class="btn btn-success">Block USer</button>
         </form>  
     <br><br>
     <form action="/unBlockAction" method="POST">  
         <label>Select an Ip : </label><select name="ip" class="form-control selcls">
+            <OPTION  value="" SELECTED>--SELECT--</OPTION>
         {% for block_ip in blocked_ips %}
-        <OPTION  value="{{block_ip[0]}}" SELECTED>{{block_ip[0]}}</OPTION>
+        <OPTION  value="{{block_ip['ip']}}" SELECTED>{{block_ip['ip']}}</OPTION>
         {% endfor %}
         </select><br>
-        <button type="submit" class="btn btn-danger">Unblock Ip</button>
+        <button type="submit" class="btn btn-danger">Unblock User</button>
     </form>  
       </div>
      </div>
