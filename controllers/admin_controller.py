@@ -40,6 +40,7 @@ class AdminController:
                 'time' : row['created_at']
             })
         return jsonify(data)
+
     def get_all_blocked_ips(self):
         data = []
         dbRows = self.__admin.read_blocked_ips()
