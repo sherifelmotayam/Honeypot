@@ -3,12 +3,13 @@
 	<head>
 		<meta charset="utf-8">
 		<title>{% block title %}{% endblock %}</title>
-		<meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="">
         <meta name="author" content="">
-		<link rel="stylesheet" href="static/css/app.css">
+		<link rel="icon" href="../static/img/hr-logo.png" sizes="16x16">
+		<!-- <link rel="stylesheet" href="static/css/app.css">
+		<link rel="stylesheet" href="static/css/admin.min.css"> -->
 		 <!-- Bootstrap core CSS-->
 		 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   
@@ -25,28 +26,83 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
-	
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
 	<!-- Page level plugin JavaScript-->
 	<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
 	<script src="https://js.pusher.com/4.0/pusher.min.js"></script>
 	<!-- Custom scripts for this page-->
 	<script src="{{ url_for('static', filename='js/app.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/sb-admin.js') }}"></script>
+	<!-- <script src="{{ url_for('static', filename='js/sb-admin.js') }}"></script> -->
 	</head>
-	<body class="loggedin">
-		<nav class="navtop">
-			<div>
-				<h1>Website Title</h1>
-                <a href="/home"><i class="fas fa-home"></i>Home</a>
-				<a href="/profile"><i class="fas fa-user-circle"></i>Profile</a>
-				<a href="/addEmployee"><i class="fas fa-users"></i>Add Users</a>
-				<a href="/logout"><i class="fas fa-sign-out-alt"></i>Logout</a>
-				<input type="text" placeholder="Search..">
-			</div>
-		</nav>
-		<div class="content">
-			{% block content %}{% endblock %}
+	<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark static-top">
+	<div class="container">
+	  <a class="navbar-brand" href="/home">
+		<img src="../../static/img/hr-logo.png" alt="..." style="height: auto; width: auto; max-height: 72px; max-width: 250px;">
+	  </a>
+	  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	  </button>
+	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav ml-auto">
+		  <li class="nav-item">
+			<a class="nav-link" aria-current="page" href="/home">Dashboard</a>
+		  </li>
+		  <li class="nav-item">
+			<a class="nav-link" aria-current="page" href="/aboutus">About us</a>
+		  </li>
+		  <li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+			  Employees
+			</a>
+			<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+			  <li><a class="dropdown-item" href="/addEmployee">Add Employee</a></li>
+			  <li><a class="dropdown-item" href="#">Update Employee</a></li>
+			  <li><a class="dropdown-item" href="#">Delete Employee</a></li>
+			  <!-- <li>
+				<hr class="dropdown-divider">
+			  </li>
+			  <li><a class="dropdown-item" href="#">Something else here</a></li>  -->
+			</ul>
+		  </li>
+		  <li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+			  Departments
+			</a>
+			<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+			  <li><a class="dropdown-item" href="#">Add Department</a></li>
+			  <li><a class="dropdown-item" href="#">Update Department</a></li>
+			  <li><a class="dropdown-item" href="#">Delete Department</a></li>
+			</ul>
+		  </li>
+
+		  <li class="nav-item dropdown">
+			<a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+				Welcome back, {{ fullname }}
+			</a>
+			<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+			<li><a class="dropdown-item" href="/profile">Profile</a></li>
+			<li>
+				<hr class="dropdown-divider">
+			</li>
+			<li><a class="dropdown-item" href="/logout">Signout</a></li>
+			</ul>
+		</ul>
+	  </div>
+	</div>
+  </nav>
+  
+  <!-- Page Content -->
+  <div class="container">
+	{% block content %}{% endblock %}
+  </div>
+
+	</body>
+	<footer class="bg-light pb-5">
+		<div class="container text-center">
+		  <p class="font-italic text-muted mb-0">&copy; Copyrights Company.com All rights reserved.</p>
 		</div>
-	</body> 
+	  </footer>
 </html>
